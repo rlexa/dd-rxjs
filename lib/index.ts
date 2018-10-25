@@ -4,7 +4,7 @@ import { tap } from 'rxjs/operators';
 export * from './done-subject';
 export * from './worker-observable';
 
-export const rxApplyFirst = <T, U>(param: T, funcs: ((val: T) => U)[]) => {
+export const rxApplyFirst = <T, U>(param: T, funcs: (null | ((val: T) => U))[]) => {
   const func = funcs.find(_ => typeof (_) === 'function');
   if (func) {
     return func(param);
@@ -12,7 +12,7 @@ export const rxApplyFirst = <T, U>(param: T, funcs: ((val: T) => U)[]) => {
   return null;
 }
 
-export const rxApplyFirst_ = <T, U>(...funcs: ((val: T) => U)[]) => (val: T) => rxApplyFirst(val, funcs);
+export const rxApplyFirst_ = <T, U>(...funcs: (null | ((val: T) => U))[]) => (val: T) => rxApplyFirst<T, U>(val, funcs);
 
 export const rxIfDo = <T>(check: boolean | ((val: T) => boolean), then: (val: T) => void) =>
   tap<T>(val => (typeof check === 'function' ? check(val) : check) ? then(val) : {});
