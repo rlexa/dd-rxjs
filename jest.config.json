@@ -1,0 +1,30 @@
+{
+  "transform": {
+    "^.+\\.(t|j)sx?$": "ts-jest"
+  },
+  "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+  "moduleFileExtensions": [
+    "ts",
+    "tsx",
+    "js",
+    "jsx",
+    "json",
+    "node"
+  ],
+  "modulePathIgnorePatterns": [
+    "<rootDir>.DS_Store",
+    "<rootDir>/.svn",
+    "<rootDir>/.vscode",
+    "<rootDir>/.sass-cache",
+    "<rootDir>/coverage",
+    "<rootDir>/dist",
+    "<rootDir>/e2e",
+    "<rootDir>/junit",
+    "<rootDir>/node_modules",
+    "<rootDir>/out-tsc",
+    "<rootDir>/tmp"
+  ],
+  "roots": [
+    "<rootDir>/lib"
+  ]
+}
