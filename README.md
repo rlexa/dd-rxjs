@@ -47,7 +47,7 @@ const worker$ = work$_(
     ), 1000)));
 
 const testCount$ = new Subject<number>();
-const testData$ = testCount$.pipe.pipe(switchMap(this.worker$));
+const testData$ = testCount$.pipe(switchMap(this.worker$));
 ...
 testData$.subscribe(console.log);
 testCount$.next(1234);
