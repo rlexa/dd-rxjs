@@ -1,6 +1,6 @@
 import { BehaviorSubject, merge, of, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { rxApplyFirst, rxApplyFirst_, rxComplete, rxFalse, rxFalse_, rxFire, rxFire_, rxIfDo, rxJust, rxJust_, rxNext, rxNext_, rxNull, rxNull_, rxThrowIf, rxTrue, rxTrue_ } from '.';
+import { rxApplyFirst, rxApplyFirst_, rxComplete, rxFalse, rxFalse_, rxFire, rxFire_, rxIfDo, rxIfThrow, rxJust, rxJust_, rxNext, rxNext_, rxNull, rxNull_, rxTrue, rxTrue_ } from '.';
 import { DoneSubject } from './done-subject';
 
 describe('rxjs extension', () => {
@@ -26,13 +26,13 @@ describe('rxjs extension', () => {
     temp = 0; of(1).pipe(rxIfDo(_ => _ % 2 === 1, func)).subscribe(); expect(temp).toBe(1);
   });
 
-  test('rxThrowIf', () => {
+  test('rxIfThrow', () => {
     let error = '';
 
-    error = ''; of(1).pipe(rxThrowIf(false, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('');
-    error = ''; of(1).pipe(rxThrowIf(true, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('error');
-    error = ''; of(1).pipe(rxThrowIf(_ => _ % 2 === 0, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('');
-    error = ''; of(1).pipe(rxThrowIf(_ => _ % 2 === 1, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('error');
+    error = ''; of(1).pipe(rxIfThrow(false, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('');
+    error = ''; of(1).pipe(rxIfThrow(true, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('error');
+    error = ''; of(1).pipe(rxIfThrow(_ => _ % 2 === 0, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('');
+    error = ''; of(1).pipe(rxIfThrow(_ => _ % 2 === 1, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('error');
   });
 
   test('rxComplete single', () => {

@@ -22,7 +22,7 @@ export const rxIfDo = <T>(check: boolean | ((val: T) => boolean), func: (val: T)
   tap<T>(val => (typeof check === 'function' ? check(val) : check) ? func(val) : {});
 
 /** @param check if evaluates to true then ex is thrown */
-export const rxThrowIf = <T, R>(check: boolean | ((val: T) => boolean), ex: R | ((val: T) => R)) =>
+export const rxIfThrow = <T, R>(check: boolean | ((val: T) => boolean), ex: R | ((val: T) => R)) =>
   tap<T>(val => {
     if (typeof check === 'function' ? check(val) : check) {
       throw typeof ex === 'function' ? (ex as (val: T) => R)(val) : ex;
