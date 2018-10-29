@@ -1,3 +1,7 @@
+### 1.0.2
+
+* *chore* **tests:** now correctly configured ts-jest and tsconfig
+
 ### 1.0.1
 
 * *chore* **clean npm dist:** npm package should not contain any junk
