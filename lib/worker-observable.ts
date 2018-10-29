@@ -45,7 +45,7 @@ export const work$ = <T, U>(func: (val: T) => U | Promise<U>, val: T) => new Obs
         worker = null;
       }
     }
-  }
+  },
 );
 
 export const work$_ = <T, U>(func: (val: T) => U | Promise<U>) => (val: T) => work$(func, val);

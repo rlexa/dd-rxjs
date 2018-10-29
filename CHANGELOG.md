@@ -1,6 +1,7 @@
 ### 1.0.2
 
 * *chore* **tests:** now correctly configured ts-jest and tsconfig
+* *chore* **lint:** added ts-lint and adjusted rules
 
 ### 1.0.1
 
