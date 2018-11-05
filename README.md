@@ -53,6 +53,19 @@ testData$.subscribe(console.log);
 testCount$.next(1234);
 ```
 
+## Decorator
+
+### `RxCleanup`
+
+Can be used in class contexts to clean up reactive properties. Completes `Subject`, unsubscribes `SubscriptionLike` and is compatible with `DoneSubject` i.e. calls `DoneSubject.done()` when encountered. Takes the clean up function as argument (default is `ngOnDestroy`) and overrides it with own clean up code (preceded by original function if detected). Angular hint: no need to extend OnDestroy if you don't need it as it gets detected automatically at runtime.
+
+```typescript
+export class ReactiveDataComponent {
+  @RxCleanup() readonly data$ = new BehaviorSubject(<T[]>[]); // auto-completed
+  readonly total$ = this.data$.pipe(map(_ => _.length));
+}
+```
+
 ## Util
 
 ### `rxApplyFirst` (`rxApplyFirst_` for curry)

@@ -12,6 +12,8 @@
     ],
     "member-access": false,
     "no-angle-bracket-type-assertion": false,
+    "no-console": false,
+    "only-arrow-functions": false,
     "semicolon": [
       "always"
     ],

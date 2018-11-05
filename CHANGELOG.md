@@ -1,3 +1,7 @@
+## 1.1.0
+
+* *new* **RxCleanup:** added decorator function for cleaning up reactive properties in class contexts
+
 ### 1.0.2
 
 * *chore* **tests:** now correctly configured ts-jest and tsconfig
