@@ -1,4 +1,4 @@
-## 1.1.0
+## 1.1.1
 
 * *new* **RxCleanup:** added decorator function for cleaning up reactive properties in class contexts
 

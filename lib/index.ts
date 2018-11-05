@@ -2,6 +2,7 @@ import { Subject, Subscribable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { DoneSubject } from './done-subject';
 
+export * from './cleanup.decorator';
 export * from './done-subject';
 export * from './worker-observable';
 
