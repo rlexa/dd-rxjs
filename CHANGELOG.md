@@ -1,3 +1,7 @@
+### 1.1.2
+
+* *change* **RxCleanup:** added RxCleanupGlobal for pre-setting the cleanup function globally (and some settings)
+
 ## 1.1.1
 
 * *new* **RxCleanup:** added decorator function for cleaning up reactive properties in class contexts

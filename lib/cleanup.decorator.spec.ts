@@ -1,5 +1,5 @@
 import { Subject, Subscription } from 'rxjs';
-import { RxCleanup } from './cleanup.decorator';
+import { RxCleanup, RxCleanupGlobal } from './cleanup.decorator';
 import { DoneSubject } from './done-subject';
 
 class TestContext {
@@ -19,9 +19,10 @@ describe('RxCleanup', () => {
     const instance = new TestContext();
     instance.sub = subj$.subscribe();
 
-    RxCleanup('cleanUp')(instance, 'done$');
-    RxCleanup('cleanUp')(instance, 'subject$');
-    RxCleanup('cleanUp')(instance, 'sub');
+    RxCleanupGlobal.funcCleanUp = 'cleanUp';
+    RxCleanup()(instance, 'done$');
+    RxCleanup()(instance, 'subject$');
+    RxCleanup()(instance, 'sub');
 
     expect(instance.cleanedUp).toBe(false);
     expect(instance.done$.isStopped).toBe(false);

@@ -57,10 +57,12 @@ testCount$.next(1234);
 
 ### `RxCleanup`
 
-Can be used in class contexts to clean up reactive properties. Completes `Subject`, unsubscribes `SubscriptionLike` and is compatible with `DoneSubject` i.e. calls `DoneSubject.done()` when encountered. Takes the clean up function as argument (default is `ngOnDestroy`) and overrides it with own clean up code (preceded by original function if detected). Angular hint: no need to extend OnDestroy if you don't need it as it gets detected automatically at runtime.
+Can be used in class contexts to clean up reactive properties. Completes `Subject`, unsubscribes `SubscriptionLike` and is compatible with `DoneSubject` i.e. calls `DoneSubject.done()` when encountered. Takes the clean up function name from `RxCleanupGlobal.funcCleanUp` (default is `ngOnDestroy`) and overrides it on the class context instance with own clean up code (preceded by original function if detected).
+
+*Angular hint*: there is no need to extend `OnDestroy` just for this to work if you don't need actual custom cleanup code in there as it gets detected automatically at runtime.
 
 ```typescript
-export class ReactiveDataComponent {
+export class ReactiveDataComponent<T> {
   @RxCleanup() readonly data$ = new BehaviorSubject(<T[]>[]); // auto-completed
   readonly total$ = this.data$.pipe(map(_ => _.length));
 }

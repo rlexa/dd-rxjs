@@ -1,8 +1,17 @@
 import { Subject } from 'rxjs';
 import { DoneSubject } from './done-subject';
 
-/** Decorator for `Subject`, `DoneSubject`, `SubscriptionLike` types to be completed/unsubscribed on clean-up (optionally takes clean-up function name, default `ngOnDestroy`). */
-export function RxCleanup(funcCleanUp = 'ngOnDestroy') {
+export const RxCleanupGlobal = {
+  funcCleanUp: 'ngOnDestroy',
+  logOnCleanup: false,
+  logWarnOnInvalidCleanupTarget: true,
+}
+
+/**
+ *  Decorator for `Subject`, `DoneSubject`, `SubscriptionLike` types to be completed/unsubscribed on clean-up.
+ *  Set cleanUp function in `RxCleanupGlobal.funcCleanUp` (default is Angular's `ngOnDestroy`).
+ */
+export function RxCleanup() {
   return function(target: any, key: string) {
     if (!target.rxCleanupKeys) {
       target.rxCleanupKeys = [];
@@ -15,13 +24,16 @@ export function RxCleanup(funcCleanUp = 'ngOnDestroy') {
           val.complete();
         } else if (typeof val === 'object' && typeof val.unsubscribe === 'function') {
           val.unsubscribe();
-        } else {
+        } else if (RxCleanupGlobal.logWarnOnInvalidCleanupTarget) {
           console.warn(`RxCleanup: invalid target '${_}' on...`, instance);
         }
       });
 
-      const onDestroyOld: () => void = target[funcCleanUp];
-      target[funcCleanUp] = function() {
+      const onDestroyOld: () => void = target[RxCleanupGlobal.funcCleanUp];
+      target[RxCleanupGlobal.funcCleanUp] = function() {
+        if (RxCleanupGlobal.logOnCleanup) {
+          console.log(`RxCleanup: cleaning up on...`, this);
+        }
         if (onDestroyOld) {
           onDestroyOld.apply(this);
         }
