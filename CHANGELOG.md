@@ -1,3 +1,7 @@
+### 1.1.3
+
+* *change* **build:** building now as commonjs module instead of ES2015 (tryfix for failing peer tests)
+
 ### 1.1.2
 
 * *change* **RxCleanup:** added RxCleanupGlobal for pre-setting the cleanup function globally (and some settings)
