@@ -10,6 +10,7 @@
       true,
       0
     ],
+    "max-classes-per-file": false,
     "member-access": false,
     "no-angle-bracket-type-assertion": false,
     "no-console": false,

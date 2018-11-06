@@ -1,5 +1,9 @@
 ### 1.1.3
 
+* *fix* **build:** RxCleanup now only cleans up instance's own keys
+
+### 1.1.3
+
 * *change* **build:** building now as commonjs module instead of ES2015 (tryfix for failing peer tests)
 
 ### 1.1.2
