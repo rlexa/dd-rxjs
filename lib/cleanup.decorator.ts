@@ -13,7 +13,7 @@ export const RxCleanupGlobal = {
  *  Set cleanUp function in `RxCleanupGlobal.funcCleanUp` (default is Angular's `ngOnDestroy`).
  */
 export function RxCleanup() {
-  return function <T extends any, K extends keyof T>(target: T, key: K) {
+  return function(target: any, key: string) {
     const keyStorage = 'RxCleanupKeys';
     if (!(keyStorage in target) || !Array.isArray(target[keyStorage])) {
       target[keyStorage] = <string[]>[];

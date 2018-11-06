@@ -1,4 +1,8 @@
-### 1.1.3
+### 1.1.5
+
+* *fix* **build:** RxCleanup now accepts private keys
+
+### 1.1.4
 
 * *fix* **build:** RxCleanup now only cleans up instance's own keys
 
