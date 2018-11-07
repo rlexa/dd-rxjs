@@ -1,3 +1,7 @@
+### 1.1.6
+
+* *fix* **build:** RxCleanup now correctly supports derived types
+
 ### 1.1.5
 
 * *fix* **build:** RxCleanup now accepts private keys
