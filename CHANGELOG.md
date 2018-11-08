@@ -1,3 +1,8 @@
+### 1.1.7
+
+* *change* **build:** RxCleanup cleanup function now has to be `ngOnDestroy` due to static type checking
+* *tryfix* **build:** RxCleanup now should correctly work in Angular production mode
+
 ### 1.1.6
 
 * *fix* **build:** RxCleanup now correctly supports derived types

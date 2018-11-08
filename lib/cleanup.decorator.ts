@@ -37,25 +37,29 @@ function cleanUp(instance: any, prototype: any) {
   cleanUp(instance, Object.getPrototypeOf(prototype));
 }
 
+export const RxCleanupFunction = 'ngOnDestroy';
 export const RxCleanupGlobal = {
-  /** set the function which will be called for cleaning up (will replace with a hook) */
-  funcCleanUp: 'ngOnDestroy',
   logOnCleanup: false,
   logWarnOnInvalidCleanupTarget: true,
 }
 
 /**
  *  Decorator for `Subject`, `DoneSubject`, `SubscriptionLike` types to be completed/unsubscribed on clean-up.
- *  Set cleanUp function in `RxCleanupGlobal.funcCleanUp` (default is Angular's `ngOnDestroy`).
+ *  Target prototype has to implement Angular's `ngOnDestroy() { }` function (else won't work in production builds).
  */
 export function RxCleanup() {
-  return function(prototype: any, field: string) {
+  return function <T extends { ['ngOnDestroy']: () => void }>(prototype: T, field: string) {
     let found = RX_CLEANUP_CACHE_PROTOTYPES.find(_ => _.proto === prototype);
     if (!found) {
       RX_CLEANUP_CACHE_PROTOTYPES.push(found = { proto: prototype, keys: [] });
-      if (!prototype[RX_CLEANUP_TARGETED]) {
-        const onDestroyOld: () => void = prototype[RxCleanupGlobal.funcCleanUp];
-        prototype[RxCleanupGlobal.funcCleanUp] = function() {
+      if (!(prototype as any)[RX_CLEANUP_TARGETED]) {
+        (prototype as any)[RX_CLEANUP_TARGETED] = true;
+
+        const onDestroyOld: () => void = prototype[RxCleanupFunction];
+        if (!onDestroyOld) {
+          console.warn(`RxCleanup: missing cleanup function ${RxCleanupFunction}, cleanup may not work in production builds on...`, prototype);
+        }
+        prototype[RxCleanupFunction] = function() {
           if (RxCleanupGlobal.logOnCleanup) {
             console.log(`RxCleanup: cleaning...`, this);
           }
@@ -70,7 +74,6 @@ export function RxCleanup() {
             console.log(`RxCleanup: done cleaning...`, this);
           }
         }
-        prototype[RX_CLEANUP_TARGETED] = true;
       }
     }
 
