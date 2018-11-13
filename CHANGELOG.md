@@ -1,3 +1,7 @@
+### 1.1.8
+
+* *fix* **bug:** RxCleanup now checks for an `unsubscribe()` object context to not be `null`
+
 ### 1.1.7
 
 * *change* **build:** RxCleanup cleanup function now has to be `ngOnDestroy` due to static type checking

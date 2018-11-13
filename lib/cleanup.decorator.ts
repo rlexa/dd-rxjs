@@ -24,7 +24,7 @@ function cleanUp(instance: any, prototype: any) {
       if (!val.isStopped) {
         val.complete();
       }
-    } else if (typeof val === 'object' && typeof val.unsubscribe === 'function') {
+    } else if (typeof val === 'object' && !!val && typeof val.unsubscribe === 'function') {
       if (RxCleanupGlobal.logOnCleanup) {
         console.log(`RxCleanup: ... ${key}: SubscriptionLike`);
       }
