@@ -1,3 +1,7 @@
+### 1.1.9
+
+* *change* **warn:** RxCleanup doesn't warn anymore about invalid targets (allowing for e.g. `null` Subscriptions), but instead when an exception is thrown while cleaning up
+
 ### 1.1.8
 
 * *fix* **bug:** RxCleanup now checks for an `unsubscribe()` object context to not be `null`

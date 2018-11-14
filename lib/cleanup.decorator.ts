@@ -11,26 +11,30 @@ function cleanUp(instance: any, prototype: any) {
 
   const cached = RX_CLEANUP_CACHE_PROTOTYPES.find(_ => _.proto === prototype);
   (cached ? cached.keys : []).forEach((key: string) => {
-    const val = instance[key];
-    if (val instanceof DoneSubject) {
-      if (RxCleanupGlobal.logOnCleanup) {
-        console.log(`RxCleanup: ... ${key}: DoneSubject`);
+    try {
+      const val = instance[key];
+      if (val instanceof DoneSubject) {
+        if (RxCleanupGlobal.logOnCleanup) {
+          console.log(`RxCleanup: ... ${key}: DoneSubject`);
+        }
+        val.done();
+      } else if (val instanceof Subject) {
+        if (RxCleanupGlobal.logOnCleanup) {
+          console.log(`RxCleanup: ... ${key}: Subject`);
+        }
+        if (!val.isStopped) {
+          val.complete();
+        }
+      } else if (typeof val === 'object' && !!val && typeof val.unsubscribe === 'function') {
+        if (RxCleanupGlobal.logOnCleanup) {
+          console.log(`RxCleanup: ... ${key}: SubscriptionLike`);
+        }
+        val.unsubscribe();
       }
-      val.done();
-    } else if (val instanceof Subject) {
-      if (RxCleanupGlobal.logOnCleanup) {
-        console.log(`RxCleanup: ... ${key}: Subject`);
+    } catch {
+      if (RxCleanupGlobal.logWarnOnInvalidCleanupTarget) {
+        console.warn(`RxCleanup: invalid target '${key}' on...`, instance);
       }
-      if (!val.isStopped) {
-        val.complete();
-      }
-    } else if (typeof val === 'object' && !!val && typeof val.unsubscribe === 'function') {
-      if (RxCleanupGlobal.logOnCleanup) {
-        console.log(`RxCleanup: ... ${key}: SubscriptionLike`);
-      }
-      val.unsubscribe();
-    } else if (RxCleanupGlobal.logWarnOnInvalidCleanupTarget) {
-      console.warn(`RxCleanup: invalid target '${key}' on...`, instance);
     }
   });
 
