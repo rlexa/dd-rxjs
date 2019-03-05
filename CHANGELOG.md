@@ -1,3 +1,7 @@
+## 1.2.0
+
+* *new* **RxThrottle:** added pipe operator for start-throttle-end stream values
+
 ### 1.1.9
 
 * *change* **warn:** RxCleanup doesn't warn anymore about invalid targets (allowing for e.g. `null` Subscriptions), but instead when an exception is thrown while cleaning up

@@ -1,5 +1,5 @@
-import { Subject, Subscribable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { merge, MonoTypeOperatorFunction, Observable, Subject, Subscribable } from 'rxjs';
+import { debounceTime, tap, throttleTime } from 'rxjs/operators';
 import { DoneSubject } from './done-subject';
 
 export * from './cleanup.decorator';
@@ -67,3 +67,9 @@ export const rxNull_ = (...subjects: Array<Subject<any>>) => () => rxNull(...sub
 export const rxTrue = (...subjects: Array<Subject<boolean>>) => rxNext_(...subjects)(true);
 /** rxTrue curry */
 export const rxTrue_ = (...subjects: Array<Subject<boolean>>) => () => rxTrue(...subjects);
+
+/** `pipe(rxThrounceTime(500))` to stream the start value, smooth `throttleTime` in between and then the end value */
+export function rxThrounceTime<T>(ms: number): MonoTypeOperatorFunction<T> {
+  return (source: Observable<T>) => merge(source.pipe(throttleTime(ms)), source.pipe(debounceTime(ms)))
+    .pipe(throttleTime(0, undefined, { leading: true, trailing: false }));
+}

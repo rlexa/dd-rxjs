@@ -187,6 +187,16 @@ request = (id: string) => of(id)
   .subscribe(rxNext_(data$));
 ```
 
+### `rxThrounce`
+
+Pipe operator which combines `throttleTime` and `debounceTime` to ensure stream's starting value, smooth throttling in between and the end value.
+
+```typescript
+interval(100).pipe(take(13), throunceTime(500)).subscribe(console.log);
+// 0 6 12
+// (in test cases without browser may evaluate to 0 5 10 12)
+```
+
 ## License
 
 MIT
