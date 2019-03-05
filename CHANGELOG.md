@@ -1,6 +1,6 @@
 ## 1.2.0
 
-* *new* **RxThrottle:** added pipe operator for start-throttle-end stream values
+* *new* **rxThrounceTime:** added pipe operator for start-throttle-end stream values
 
 ### 1.1.9
 
