@@ -1,4 +1,4 @@
-import {BehaviorSubject, combineLatest, interval, merge, of, Subject} from 'rxjs';
+import {BehaviorSubject, forkJoin, interval, merge, of, Subject} from 'rxjs';
 import {take, takeLast, tap} from 'rxjs/operators';
 import {DoneSubject} from './done-subject';
 import {
@@ -225,7 +225,7 @@ describe('rxjs extension', () => {
     const vals2 = <number[]>[];
     const vals3 = <number[]>[];
     const vals4 = <number[]>[];
-    combineLatest(
+    forkJoin([
       interval(100).pipe(
         take(13),
         rxThrounceTime(500),
@@ -250,7 +250,7 @@ describe('rxjs extension', () => {
         tap(_ => vals4.push(_)),
         takeLast(1),
       ),
-    ).subscribe(undefined, undefined, () => {
+    ]).subscribe(undefined, undefined, () => {
       expect(vals1).toEqual([0, 5, 10, 12]);
       expect(vals2).toEqual([0]);
       expect(vals3).toEqual([0, 1]);

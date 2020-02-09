@@ -1,8 +1,12 @@
+## 1.3.1
+
+- _change_ **target:** from `es5` to `ES2015`
+
 ## 1.3.0
 
 - _change_ **rxFire:** expects `Subject<unknown>` args
-- _update_ **dependency:** all dependencies updated
-- _new_ **dependency:** added `prettier`
+- _update_ **all:** dependencies
+- _dependency_ **prettier:** added
 
 ## 1.2.0
 
