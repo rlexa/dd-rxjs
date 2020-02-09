@@ -1,6 +1,6 @@
-import { Subject, Subscription } from 'rxjs';
-import { RxCleanup } from './cleanup.decorator';
-import { DoneSubject } from './done-subject';
+import {Subject, Subscription} from 'rxjs';
+import {RxCleanup} from './cleanup.decorator';
+import {DoneSubject} from './done-subject';
 
 class TestContext {
   cleanedUp = 0;

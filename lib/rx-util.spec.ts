@@ -1,7 +1,26 @@
-import { BehaviorSubject, combineLatest, interval, merge, of, Subject } from 'rxjs';
-import { take, takeLast, tap } from 'rxjs/operators';
-import { rxApplyFirst, rxApplyFirst_, rxComplete, rxFalse, rxFalse_, rxFire, rxFire_, rxIfDo, rxIfThrow, rxJust, rxJust_, rxNext, rxNext_, rxNull, rxNull_, rxThrounceTime, rxTrue, rxTrue_ } from '.';
-import { DoneSubject } from './done-subject';
+import {BehaviorSubject, combineLatest, interval, merge, of, Subject} from 'rxjs';
+import {take, takeLast, tap} from 'rxjs/operators';
+import {DoneSubject} from './done-subject';
+import {
+  rxApplyFirst,
+  rxApplyFirst_,
+  rxComplete,
+  rxFalse,
+  rxFalse_,
+  rxFire,
+  rxFire_,
+  rxIfDo,
+  rxIfThrow,
+  rxJust,
+  rxJust_,
+  rxNext,
+  rxNext_,
+  rxNull,
+  rxNull_,
+  rxThrounceTime,
+  rxTrue,
+  rxTrue_,
+} from './rx-util';
 
 describe('rxjs extension', () => {
   test('rxApplyFirst', () => {
@@ -12,27 +31,64 @@ describe('rxjs extension', () => {
 
     expect(rxApplyFirst_()(1)).toBe(null);
     expect(rxApplyFirst_(_ => _)(1)).toBe(1);
-    expect(rxApplyFirst_((_: number) => _ + 1, _ => _)(1)).toBe(2);
+    expect(
+      rxApplyFirst_(
+        (_: number) => _ + 1,
+        _ => _,
+      )(1),
+    ).toBe(2);
     expect(rxApplyFirst_(null, _ => _)(1)).toBe(1);
   });
 
   test('rxIfDo', () => {
     let temp = 0;
-    const func = (val: number) => temp += val;
+    const func = (val: number) => (temp += val);
 
-    temp = 0; of(1).pipe(rxIfDo(false, func)).subscribe(); expect(temp).toBe(0);
-    temp = 0; of(1).pipe(rxIfDo(true, func)).subscribe(); expect(temp).toBe(1);
-    temp = 0; of(1).pipe(rxIfDo(_ => _ % 2 === 0, func)).subscribe(); expect(temp).toBe(0);
-    temp = 0; of(1).pipe(rxIfDo(_ => _ % 2 === 1, func)).subscribe(); expect(temp).toBe(1);
+    temp = 0;
+    of(1)
+      .pipe(rxIfDo(false, func))
+      .subscribe();
+    expect(temp).toBe(0);
+    temp = 0;
+    of(1)
+      .pipe(rxIfDo(true, func))
+      .subscribe();
+    expect(temp).toBe(1);
+    temp = 0;
+    of(1)
+      .pipe(rxIfDo(_ => _ % 2 === 0, func))
+      .subscribe();
+    expect(temp).toBe(0);
+    temp = 0;
+    of(1)
+      .pipe(rxIfDo(_ => _ % 2 === 1, func))
+      .subscribe();
+    expect(temp).toBe(1);
   });
 
   test('rxIfThrow', () => {
     let error = '';
 
-    error = ''; of(1).pipe(rxIfThrow(false, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('');
-    error = ''; of(1).pipe(rxIfThrow(true, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('error');
-    error = ''; of(1).pipe(rxIfThrow(_ => _ % 2 === 0, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('');
-    error = ''; of(1).pipe(rxIfThrow(_ => _ % 2 === 1, 'error')).subscribe(undefined, _ => error = _); expect(error).toBe('error');
+    error = '';
+    of(1)
+      .pipe(rxIfThrow(false, 'error'))
+      .subscribe(undefined, _ => (error = _));
+    expect(error).toBe('');
+    error = '';
+    of(1)
+      .pipe(rxIfThrow(true, 'error'))
+      .subscribe(undefined, _ => (error = _));
+    expect(error).toBe('error');
+    error = '';
+    of(1)
+      .pipe(rxIfThrow(_ => _ % 2 === 0, 'error'))
+      .subscribe(undefined, _ => (error = _));
+    expect(error).toBe('');
+    error = '';
+    of(1)
+      .pipe(rxIfThrow(_ => _ % 2 === 1, 'error'))
+      .subscribe(undefined, _ => (error = _));
+    expect(error).toBe('error');
   });
 
   test('rxComplete single', () => {
@@ -63,10 +119,14 @@ describe('rxjs extension', () => {
 
   test('rxJust', () => {
     let temp = 0;
-    const set$ = of(1).pipe(tap(_ => temp = _));
+    const set$ = of(1).pipe(tap(_ => (temp = _)));
 
-    temp = 0; rxJust(set$); expect(temp).toBe(1);
-    temp = 0; rxJust_(set$)(); expect(temp).toBe(1);
+    temp = 0;
+    rxJust(set$);
+    expect(temp).toBe(1);
+    temp = 0;
+    rxJust_(set$)();
+    expect(temp).toBe(1);
   });
 
   test('rxNext', () => {
@@ -166,17 +226,36 @@ describe('rxjs extension', () => {
     const vals3 = <number[]>[];
     const vals4 = <number[]>[];
     combineLatest(
-      interval(100).pipe(take(13), rxThrounceTime(500), tap(_ => vals1.push(_)), takeLast(1)),
-      interval(100).pipe(take(1), rxThrounceTime(500), tap(_ => vals2.push(_)), takeLast(1)),
-      interval(100).pipe(take(2), rxThrounceTime(500), tap(_ => vals3.push(_)), takeLast(1)),
-      interval(100).pipe(take(11), rxThrounceTime(500), tap(_ => vals4.push(_)), takeLast(1)),
-    )
-      .subscribe(undefined, undefined, () => {
-        expect(vals1).toEqual([0, 5, 10, 12]);
-        expect(vals2).toEqual([0]);
-        expect(vals3).toEqual([0, 1]);
-        expect(vals4).toEqual([0, 5, 10]);
-        done();
-      });
+      interval(100).pipe(
+        take(13),
+        rxThrounceTime(500),
+        tap(_ => vals1.push(_)),
+        takeLast(1),
+      ),
+      interval(100).pipe(
+        take(1),
+        rxThrounceTime(500),
+        tap(_ => vals2.push(_)),
+        takeLast(1),
+      ),
+      interval(100).pipe(
+        take(2),
+        rxThrounceTime(500),
+        tap(_ => vals3.push(_)),
+        takeLast(1),
+      ),
+      interval(100).pipe(
+        take(11),
+        rxThrounceTime(500),
+        tap(_ => vals4.push(_)),
+        takeLast(1),
+      ),
+    ).subscribe(undefined, undefined, () => {
+      expect(vals1).toEqual([0, 5, 10, 12]);
+      expect(vals2).toEqual([0]);
+      expect(vals3).toEqual([0, 1]);
+      expect(vals4).toEqual([0, 5, 10]);
+      done();
+    });
   });
 });

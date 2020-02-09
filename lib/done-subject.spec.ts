@@ -1,6 +1,6 @@
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { DoneSubject } from './done-subject';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {DoneSubject} from './done-subject';
 
 describe('DoneSubject', () => {
   test('done() completes', () => {
