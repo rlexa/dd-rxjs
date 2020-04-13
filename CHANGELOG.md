@@ -1,6 +1,7 @@
-## 1.3.3
+## 1.3.4
 
 - _update_ **dependencies:** updated all dependencies and code conventions
+- _add_ **RxCleanup:** now also checks for `complete()` functions and calls them
 
 ## 1.3.1
 

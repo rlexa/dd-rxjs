@@ -9,7 +9,7 @@ function cleanUp(instance: any, prototype: any) {
     return;
   }
 
-  const cached = RX_CLEANUP_CACHE_PROTOTYPES.find(_ => _.proto === prototype);
+  const cached = RX_CLEANUP_CACHE_PROTOTYPES.find((_) => _.proto === prototype);
   (cached ? cached.keys : []).forEach((key: string) => {
     try {
       const val = instance[key];
@@ -25,11 +25,18 @@ function cleanUp(instance: any, prototype: any) {
         if (!val.isStopped) {
           val.complete();
         }
-      } else if (typeof val === 'object' && !!val && typeof val.unsubscribe === 'function') {
-        if (RxCleanupGlobal.logOnCleanup) {
-          console.log(`RxCleanup: ... ${key}: SubscriptionLike`);
+      } else if (typeof val === 'object' && !!val) {
+        if (typeof val.unsubscribe === 'function') {
+          if (RxCleanupGlobal.logOnCleanup) {
+            console.log(`RxCleanup: ... ${key}: SubscriptionLike`);
+          }
+          val.unsubscribe();
+        } else if (typeof val.complete === 'function') {
+          if (RxCleanupGlobal.logOnCleanup) {
+            console.log(`RxCleanup: ... ${key}: CompleteableLike`);
+          }
+          val.complete();
         }
-        val.unsubscribe();
       }
     } catch {
       if (RxCleanupGlobal.logWarnOnInvalidCleanupTarget) {
@@ -52,8 +59,8 @@ export const RxCleanupGlobal = {
  *  Target prototype has to implement Angular's `ngOnDestroy() { }` function (else won't work in production builds).
  */
 export function RxCleanup() {
-  return function<T extends {['ngOnDestroy']: () => void}>(prototype: T, field: string) {
-    let found = RX_CLEANUP_CACHE_PROTOTYPES.find(_ => _.proto === prototype);
+  return function <T extends {['ngOnDestroy']: () => void}>(prototype: T, field: string) {
+    let found = RX_CLEANUP_CACHE_PROTOTYPES.find((_) => _.proto === prototype);
     if (!found) {
       RX_CLEANUP_CACHE_PROTOTYPES.push((found = {proto: prototype, keys: []}));
       if (!(prototype as any)[RX_CLEANUP_TARGETED]) {
@@ -66,7 +73,7 @@ export function RxCleanup() {
             prototype,
           );
         }
-        prototype[RxCleanupFunction] = function() {
+        prototype[RxCleanupFunction] = function () {
           if (RxCleanupGlobal.logOnCleanup) {
             console.log(`RxCleanup: cleaning...`, this);
           }
