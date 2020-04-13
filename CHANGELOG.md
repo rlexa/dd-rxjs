@@ -1,3 +1,7 @@
+## 1.3.3
+
+- _update_ **dependencies:** updated all dependencies and code conventions
+
 ## 1.3.1
 
 - _change_ **target:** from `es5` to `ES2015`
