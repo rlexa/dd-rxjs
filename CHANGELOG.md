@@ -1,3 +1,7 @@
+## 1.3.6
+
+- _update_ **dependencies:** updated all dependencies and code conventions
+
 ## 1.3.5
 
 - _update_ **dependencies:** updated all dependencies and code conventions

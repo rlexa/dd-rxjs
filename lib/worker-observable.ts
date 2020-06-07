@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs';
 
 export const work$ = <T, U>(func: (val: T) => U | Promise<U>, val: T) =>
-  new Observable<U>(subscriber => {
+  new Observable<U>((subscriber) => {
     let worker = <Worker | null>null;
     try {
       worker = new Worker(
@@ -37,7 +37,7 @@ self.onmessage = ev => {
 
     if (worker) {
       worker.onerror = subscriber.error;
-      worker.onmessage = data => {
+      worker.onmessage = (data) => {
         if (data.data.error) {
           subscriber.error(data.data.error);
         } else {

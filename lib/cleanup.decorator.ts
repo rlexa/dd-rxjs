@@ -68,10 +68,7 @@ export function RxCleanup() {
 
         const onDestroyOld: () => void = prototype[RxCleanupFunction];
         if (!onDestroyOld) {
-          console.warn(
-            `RxCleanup: missing cleanup function ${RxCleanupFunction}, cleanup may not work in production builds on...`,
-            prototype,
-          );
+          console.warn(`RxCleanup: missing cleanup function ${RxCleanupFunction}, cleanup may not work in production builds.`, prototype);
         }
         prototype[RxCleanupFunction] = function () {
           if (RxCleanupGlobal.logOnCleanup) {
@@ -85,7 +82,7 @@ export function RxCleanup() {
           cleanUp(this, Object.getPrototypeOf(this));
 
           if (RxCleanupGlobal.logOnCleanup) {
-            console.log(`RxCleanup: done cleaning...`, this);
+            console.log(`RxCleanup: done cleaning.`, this);
           }
         };
       }

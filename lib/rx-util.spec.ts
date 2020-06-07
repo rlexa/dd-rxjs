@@ -25,19 +25,19 @@ import {
 describe('rxjs extension', () => {
   test('rxApplyFirst', () => {
     expect(rxApplyFirst(1, [])).toBe(null);
-    expect(rxApplyFirst(1, [_ => _])).toBe(1);
-    expect(rxApplyFirst(1, [_ => _ + 1, _ => _])).toBe(2);
-    expect(rxApplyFirst(1, [null, _ => _])).toBe(1);
+    expect(rxApplyFirst(1, [(_) => _])).toBe(1);
+    expect(rxApplyFirst(1, [(_) => _ + 1, (_) => _])).toBe(2);
+    expect(rxApplyFirst(1, [null, (_) => _])).toBe(1);
 
     expect(rxApplyFirst_()(1)).toBe(null);
-    expect(rxApplyFirst_(_ => _)(1)).toBe(1);
+    expect(rxApplyFirst_((_) => _)(1)).toBe(1);
     expect(
       rxApplyFirst_(
         (_: number) => _ + 1,
-        _ => _,
+        (_) => _,
       )(1),
     ).toBe(2);
-    expect(rxApplyFirst_(null, _ => _)(1)).toBe(1);
+    expect(rxApplyFirst_(null, (_) => _)(1)).toBe(1);
   });
 
   test('rxIfDo', () => {
@@ -45,23 +45,19 @@ describe('rxjs extension', () => {
     const func = (val: number) => (temp += val);
 
     temp = 0;
-    of(1)
-      .pipe(rxIfDo(false, func))
-      .subscribe();
+    of(1).pipe(rxIfDo(false, func)).subscribe();
     expect(temp).toBe(0);
     temp = 0;
-    of(1)
-      .pipe(rxIfDo(true, func))
-      .subscribe();
+    of(1).pipe(rxIfDo(true, func)).subscribe();
     expect(temp).toBe(1);
     temp = 0;
     of(1)
-      .pipe(rxIfDo(_ => _ % 2 === 0, func))
+      .pipe(rxIfDo((_) => _ % 2 === 0, func))
       .subscribe();
     expect(temp).toBe(0);
     temp = 0;
     of(1)
-      .pipe(rxIfDo(_ => _ % 2 === 1, func))
+      .pipe(rxIfDo((_) => _ % 2 === 1, func))
       .subscribe();
     expect(temp).toBe(1);
   });
@@ -72,22 +68,22 @@ describe('rxjs extension', () => {
     error = '';
     of(1)
       .pipe(rxIfThrow(false, 'error'))
-      .subscribe(undefined, _ => (error = _));
+      .subscribe(undefined, (_) => (error = _));
     expect(error).toBe('');
     error = '';
     of(1)
       .pipe(rxIfThrow(true, 'error'))
-      .subscribe(undefined, _ => (error = _));
+      .subscribe(undefined, (_) => (error = _));
     expect(error).toBe('error');
     error = '';
     of(1)
-      .pipe(rxIfThrow(_ => _ % 2 === 0, 'error'))
-      .subscribe(undefined, _ => (error = _));
+      .pipe(rxIfThrow((_) => _ % 2 === 0, 'error'))
+      .subscribe(undefined, (_) => (error = _));
     expect(error).toBe('');
     error = '';
     of(1)
-      .pipe(rxIfThrow(_ => _ % 2 === 1, 'error'))
-      .subscribe(undefined, _ => (error = _));
+      .pipe(rxIfThrow((_) => _ % 2 === 1, 'error'))
+      .subscribe(undefined, (_) => (error = _));
     expect(error).toBe('error');
   });
 
@@ -119,7 +115,7 @@ describe('rxjs extension', () => {
 
   test('rxJust', () => {
     let temp = 0;
-    const set$ = of(1).pipe(tap(_ => (temp = _)));
+    const set$ = of(1).pipe(tap((_) => (temp = _)));
 
     temp = 0;
     rxJust(set$);
@@ -220,7 +216,7 @@ describe('rxjs extension', () => {
     s2.complete();
   });
 
-  test('rxThrounceTime', done => {
+  test('rxThrounceTime', (done) => {
     const vals1 = <number[]>[];
     const vals2 = <number[]>[];
     const vals3 = <number[]>[];
@@ -229,25 +225,25 @@ describe('rxjs extension', () => {
       interval(100).pipe(
         take(13),
         rxThrounceTime(500),
-        tap(_ => vals1.push(_)),
+        tap((_) => vals1.push(_)),
         takeLast(1),
       ),
       interval(100).pipe(
         take(1),
         rxThrounceTime(500),
-        tap(_ => vals2.push(_)),
+        tap((_) => vals2.push(_)),
         takeLast(1),
       ),
       interval(100).pipe(
         take(2),
         rxThrounceTime(500),
-        tap(_ => vals3.push(_)),
+        tap((_) => vals3.push(_)),
         takeLast(1),
       ),
       interval(100).pipe(
         take(11),
         rxThrounceTime(500),
-        tap(_ => vals4.push(_)),
+        tap((_) => vals4.push(_)),
         takeLast(1),
       ),
     ]).subscribe(undefined, undefined, () => {
