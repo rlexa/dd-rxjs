@@ -1,3 +1,7 @@
+## 1.4.0
+
+- _breaking_ **RxCleanup:** now looks for `destroy()` functions instead of `ngOnDestroy()`
+
 ## 1.3.7
 
 - _add_ **StateSubject:** for a `BehaviorSubject` with checked value identity

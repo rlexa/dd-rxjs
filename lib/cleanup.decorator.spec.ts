@@ -6,7 +6,7 @@ class TestContext {
   cleanedUp = 0;
   private readonly done$ = new DoneSubject();
   private readonly completeable = {complete: () => 0};
-  ngOnDestroy() {
+  destroy() {
     ++this.cleanedUp;
   }
 }
@@ -14,15 +14,15 @@ class TestContext {
 class TestContext1 extends TestContext {
   readonly subject$ = new Subject();
   sub: Subscription | null = null;
-  ngOnDestroy() {
-    super.ngOnDestroy();
+  destroy() {
+    super.destroy();
   }
 }
 
 class TestContext2 extends TestContext {
   readonly otherSubject$ = new Subject();
-  ngOnDestroy() {
-    super.ngOnDestroy();
+  destroy() {
+    super.destroy();
   }
 }
 
@@ -46,7 +46,7 @@ describe('RxCleanup', () => {
     expect((instance1 as any).completeable.complete).not.toHaveBeenCalled();
     expect(instance1.subject$.isStopped).toBe(false);
     expect(instance1.sub.closed).toBe(false);
-    instance1.ngOnDestroy();
+    instance1.destroy();
     expect(instance1.cleanedUp).toBe(1);
     expect((instance1 as any).done$.isStopped).toBe(true);
     expect((instance1 as any).completeable.complete).toHaveBeenCalled();
@@ -57,7 +57,7 @@ describe('RxCleanup', () => {
     expect((instance2 as any).done$.isStopped).toBe(false);
     expect((instance2 as any).completeable.complete).not.toHaveBeenCalled();
     expect(instance2.otherSubject$.isStopped).toBe(false);
-    instance2.ngOnDestroy();
+    instance2.destroy();
     expect(instance2.cleanedUp).toBe(1);
     expect((instance2 as any).done$.isStopped).toBe(true);
     expect((instance2 as any).completeable.complete).toHaveBeenCalled();

@@ -48,22 +48,22 @@ function cleanUp(instance: any, prototype: any) {
   cleanUp(instance, Object.getPrototypeOf(prototype));
 }
 
-/** @deprecated No more monkey patching of ngOnDestroy since at least Angular 9. */
-export const RxCleanupFunction = 'ngOnDestroy';
-/** @deprecated No more monkey patching of ngOnDestroy since at least Angular 9. */
+/** Class needs to have this function (will be monkey-patched). */
+export const RxCleanupFunction = 'destroy';
+
 export const RxCleanupGlobal = {
+  /** Log on cleanup (default false). */
   logOnCleanup: false,
+  /** Log warn on invalid decorator target (default true). */
   logWarnOnInvalidCleanupTarget: true,
 };
 
 /**
- * @deprecated No more monkey patching of ngOnDestroy since at least Angular 9.
- *
  * Decorator for `Subject`, `DoneSubject`, `SubscriptionLike` types to be completed/unsubscribed on clean-up.
- * Target prototype has to implement Angular's `ngOnDestroy() { }` function (else won't work in production builds).
+ * Target prototype has to implement and call a `destroy()` function.
  */
 export function RxCleanup() {
-  return function <T extends {['ngOnDestroy']: () => void}>(prototype: T, field: string) {
+  return function <T extends {['destroy']: () => void}>(prototype: T, field: string) {
     let found = RX_CLEANUP_CACHE_PROTOTYPES.find((_) => _.proto === prototype);
     if (!found) {
       RX_CLEANUP_CACHE_PROTOTYPES.push((found = {proto: prototype, keys: []}));

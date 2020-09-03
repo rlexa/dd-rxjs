@@ -65,11 +65,7 @@ testCount$.next(1234);
 
 ## Decorator
 
-### **DEPRECATED** `RxCleanup`
-
-**DEPRECATED** sadly this solution does not work with anymore at least since Angular 9 because ngOnDestroy hooks seem to be stored by NG engine before `RxCleanup` has a change to monkey-patch them.
-
-Can be used in class contexts to clean up reactive properties. Completes `Subject`, unsubscribes `SubscriptionLike` and is compatible with `DoneSubject` i.e. calls `DoneSubject.done()` when encountered. The targeted prototypes have to implement the `ngOnDestroy() {}` function even if it's empty otherwise (this ensures production build support).
+Can be used in class contexts to clean up reactive properties. Completes `Subject`, unsubscribes `SubscriptionLike` and is compatible with `DoneSubject` i.e. calls `DoneSubject.done()` when encountered. The targeted prototypes have to implement and call the `destroy() {}` function even if it's empty otherwise (this ensures production build support).
 
 #### `RxCleanupGlobal`
 
@@ -79,7 +75,7 @@ Invalid cleanup targets are logged by default - this can be deactivated by setti
 export class ReactiveDataComponent<T> {
   @RxCleanup() readonly data$ = new BehaviorSubject(<T[]>[]); // auto-completed
   readonly total$ = this.data$.pipe(map((_) => _.length));
-  ngOnDestroy() {}
+  destroy() {}
 }
 ```
 
