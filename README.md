@@ -32,6 +32,16 @@ export class MyComponent extends OnDestroy, OnInit {
 }
 ```
 
+### `StateSubject`
+
+Normal `BehaviorSubject` but only sets the value in `next` if it's not the same (identity check) as current `.value`.
+
+```typescript
+const sbj$ = new StateSubject(123);
+sbj$.next(123); // ignored
+sbj$.next(234); // accepted
+```
+
 ### `work$` (`work$_` for curry)
 
 Wrapper for web Worker: takes a function which gets evaluated with the provided value in a dedicated web worker context. The function is stringified i.e. it needs to be pure and can only use functions inside of it's own scope. The Worker is created, executed and terminated when subscribed.
@@ -55,7 +65,9 @@ testCount$.next(1234);
 
 ## Decorator
 
-### `RxCleanup`
+### **DEPRECATED** `RxCleanup`
+
+**DEPRECATED** sadly this solution does not work with anymore at least since Angular 9 because ngOnDestroy hooks seem to be stored by NG engine before `RxCleanup` has a change to monkey-patch them.
 
 Can be used in class contexts to clean up reactive properties. Completes `Subject`, unsubscribes `SubscriptionLike` and is compatible with `DoneSubject` i.e. calls `DoneSubject.done()` when encountered. The targeted prototypes have to implement the `ngOnDestroy() {}` function even if it's empty otherwise (this ensures production build support).
 
@@ -66,7 +78,7 @@ Invalid cleanup targets are logged by default - this can be deactivated by setti
 ```typescript
 export class ReactiveDataComponent<T> {
   @RxCleanup() readonly data$ = new BehaviorSubject(<T[]>[]); // auto-completed
-  readonly total$ = this.data$.pipe(map(_ => _.length));
+  readonly total$ = this.data$.pipe(map((_) => _.length));
   ngOnDestroy() {}
 }
 ```
@@ -111,9 +123,7 @@ Calls next() on Subjects.
 ```typescript
 reload = () => rxFire(triggerReload$);
 
-merge(tableFilter$, tableSortColumn$, tableSortDirection$)
-  .pipe(debounceTime(0))
-  .subscribe(rxFire_(triggerReload$, saveCurrentParameter$));
+merge(tableFilter$, tableSortColumn$, tableSortDirection$).pipe(debounceTime(0)).subscribe(rxFire_(triggerReload$, saveCurrentParameter$));
 ```
 
 ### `rxJust` (`rxJust_` for curry)
@@ -133,7 +143,11 @@ Can be used as operator: checks pipe value or function of value and executes cod
 ```typescript
 eventCodeStream$
   .pipe(
-    rxIfDo(code => code === CODE_FATAL, () => console.error('FATAL ERROR!')))
+    rxIfDo(
+      (code) => code === CODE_FATAL,
+      () => console.error('FATAL ERROR!'),
+    ),
+  )
   .subscribe();
 ```
 
@@ -142,10 +156,7 @@ eventCodeStream$
 Can be used as operator: checks pipe value or function of value and throws exception if true.
 
 ```typescript
-eventCodeStream$
-  .pipe(
-    rxIfThrow(code => code === CODE_FATAL, new Error('FATAL ERROR!')))
-  .subscribe();
+eventCodeStream$.pipe(rxIfThrow((code) => code === CODE_FATAL, new Error('FATAL ERROR!'))).subscribe();
 ```
 
 ### `rxNext` (`rxNext_` for curry)
@@ -201,4 +212,4 @@ interval(100).pipe(take(13), rxThrounceTime(500)).subscribe(console.log);
 
 MIT
 
-[Source Code]: https://github.com/rlexa/dd-rxjs
+[source code]: https://github.com/rlexa/dd-rxjs

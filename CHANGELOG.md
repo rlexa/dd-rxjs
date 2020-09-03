@@ -1,3 +1,8 @@
+## 1.3.7
+
+- _add_ **StateSubject:** for a `BehaviorSubject` with checked value identity
+- _deprecate_ **RxCleanup:** since Angular 9 can't monkey patch `ngOnDestroy` anymore
+
 ## 1.3.6
 
 - _update_ **dependencies:** updated all dependencies and code conventions
