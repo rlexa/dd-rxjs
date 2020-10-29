@@ -65,6 +65,8 @@ testCount$.next(1234);
 
 ## Decorator
 
+### `RxCleanup`
+
 Can be used in class contexts to clean up reactive properties. Completes `Subject`, unsubscribes `SubscriptionLike` and is compatible with `DoneSubject` i.e. calls `DoneSubject.done()` when encountered. The targeted prototypes have to implement and call the `destroy() {}` function even if it's empty otherwise (this ensures production build support).
 
 #### `RxCleanupGlobal`
