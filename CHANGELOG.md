@@ -1,3 +1,7 @@
+## 1.5.0
+
+- _breaking_ **Build:** now publishes as module and as commonjs
+
 ## 1.4.0
 
 - _breaking_ **RxCleanup:** now looks for `destroy()` functions instead of `ngOnDestroy()`
