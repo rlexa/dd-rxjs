@@ -23,6 +23,10 @@ import {
 } from './rx-util';
 
 describe('rxjs extension', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
   test('rxApplyFirst', () => {
     expect(rxApplyFirst(1, [])).toBe(null);
     expect(rxApplyFirst(1, [(_) => _])).toBe(1);
@@ -68,38 +72,41 @@ describe('rxjs extension', () => {
     error = '';
     of(1)
       .pipe(rxIfThrow(false, 'error'))
-      .subscribe(undefined, (_) => (error = _));
+      .subscribe({error: (_) => (error = _)});
     expect(error).toBe('');
     error = '';
     of(1)
       .pipe(rxIfThrow(true, 'error'))
-      .subscribe(undefined, (_) => (error = _));
+      .subscribe({error: (_) => (error = _)});
     expect(error).toBe('error');
     error = '';
     of(1)
       .pipe(rxIfThrow((_) => _ % 2 === 0, 'error'))
-      .subscribe(undefined, (_) => (error = _));
+      .subscribe({error: (_) => (error = _)});
     expect(error).toBe('');
     error = '';
     of(1)
       .pipe(rxIfThrow((_) => _ % 2 === 1, 'error'))
-      .subscribe(undefined, (_) => (error = _));
+      .subscribe({error: (_) => (error = _)});
     expect(error).toBe('error');
   });
 
   test('rxComplete single', () => {
-    const s1 = new Subject();
-    expect(s1.isStopped).toBe(false);
+    const s1 = new Subject<void>();
+    jest.spyOn(s1, 'complete');
+    expect(s1.complete).not.toHaveBeenCalled();
     rxComplete(s1);
-    expect(s1.isStopped).toBe(true);
+    expect(s1.complete).toHaveBeenCalled();
   });
 
   test('rxComplete multi', () => {
-    const s1 = new Subject();
-    const s2 = new Subject();
+    const s1 = new Subject<void>();
+    const s2 = new Subject<void>();
+    jest.spyOn(s1, 'complete');
+    jest.spyOn(s2, 'complete');
     rxComplete(s1, s2);
-    expect(s1.isStopped).toBe(true);
-    expect(s2.isStopped).toBe(true);
+    expect(s1.complete).toHaveBeenCalled();
+    expect(s2.complete).toHaveBeenCalled();
   });
 
   test('rxComplete DoneSubject', () => {
@@ -107,9 +114,11 @@ describe('rxjs extension', () => {
     let temp = 0;
     done.subscribe(() => ++temp);
 
-    expect(done.isStopped).toBe(false);
+    jest.spyOn(done, 'done');
+
+    expect(done.done).not.toHaveBeenCalled();
     rxComplete(done);
-    expect(done.isStopped).toBe(true);
+    expect(done.done).toHaveBeenCalled();
     expect(temp).toBe(1);
   });
 
@@ -200,8 +209,8 @@ describe('rxjs extension', () => {
   });
 
   test('rxFire', () => {
-    const s1 = new Subject();
-    const s2 = new Subject();
+    const s1 = new Subject<void>();
+    const s2 = new Subject<void>();
 
     let temp = 0;
     merge(s1, s2).subscribe(() => ++temp);
@@ -246,12 +255,16 @@ describe('rxjs extension', () => {
         tap((_) => vals4.push(_)),
         takeLast(1),
       ),
-    ]).subscribe(undefined, undefined, () => {
-      expect(vals1).toEqual([0, 5, 10, 12]);
-      expect(vals2).toEqual([0]);
-      expect(vals3).toEqual([0, 1]);
-      expect(vals4).toEqual([0, 5, 10]);
-      done();
+    ]).subscribe({
+      complete: () => {
+        expect(vals1).toEqual([0, 6, 12]);
+        expect(vals2).toEqual([0]);
+        expect(vals3).toEqual([0, 1]);
+        expect(vals4).toEqual([0, 6, 10]);
+        done();
+      },
     });
+
+    jest.advanceTimersByTime(10000);
   });
 });

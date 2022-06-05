@@ -22,9 +22,7 @@ function cleanUp(instance: any, prototype: any) {
         if (RxCleanupGlobal.logOnCleanup) {
           console.log(`RxCleanup: ... ${key}: Subject`);
         }
-        if (!val.isStopped) {
-          val.complete();
-        }
+        val.complete();
       } else if (typeof val === 'object' && !!val) {
         if (typeof val.unsubscribe === 'function') {
           if (RxCleanupGlobal.logOnCleanup) {
