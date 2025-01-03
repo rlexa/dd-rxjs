@@ -1,3 +1,7 @@
+## 1.5.2
+
+- _update_ **dependencies:** all dependencies updated (check peers)
+
 ## 1.5.1
 
 - _update_ **dependencies:** all dependencies updated (check peers)
