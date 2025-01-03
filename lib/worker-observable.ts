@@ -2,7 +2,7 @@ import {Observable} from 'rxjs';
 
 export const work$ = <T, U>(func: (val: T) => U | Promise<U>, val: T) =>
   new Observable<U>((subscriber) => {
-    let worker = <Worker | null>null;
+    let worker: Worker | null = null;
     try {
       worker = new Worker(
         URL.createObjectURL(
@@ -56,4 +56,7 @@ self.onmessage = ev => {
     };
   });
 
-export const work$_ = <T, U>(func: (val: T) => U | Promise<U>) => (val: T) => work$(func, val);
+export const work$_ =
+  <T, U>(func: (val: T) => U | Promise<U>) =>
+  (val: T) =>
+    work$(func, val);

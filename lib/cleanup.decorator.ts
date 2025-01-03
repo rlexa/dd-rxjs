@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {Subject} from 'rxjs';
 import {DoneSubject} from './done-subject';
 

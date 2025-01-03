@@ -190,8 +190,8 @@ describe('rxjs extension', () => {
   });
 
   test('rxNull', () => {
-    const s1 = new BehaviorSubject(new Date());
-    const s2 = new BehaviorSubject('hello');
+    const s1 = new BehaviorSubject<Date | null>(new Date());
+    const s2 = new BehaviorSubject<string | null>('hello');
 
     expect(s1.value).not.toBeNull();
     rxNull(s1);
@@ -226,10 +226,10 @@ describe('rxjs extension', () => {
   });
 
   test('rxThrounceTime', (done) => {
-    const vals1 = <number[]>[];
-    const vals2 = <number[]>[];
-    const vals3 = <number[]>[];
-    const vals4 = <number[]>[];
+    const vals1 = [] as number[];
+    const vals2 = [] as number[];
+    const vals3 = [] as number[];
+    const vals4 = [] as number[];
     forkJoin([
       interval(100).pipe(
         take(13),

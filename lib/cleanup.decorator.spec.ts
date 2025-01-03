@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {Subject, Subscription} from 'rxjs';
 import {RxCleanup} from './cleanup.decorator';
 import {DoneSubject} from './done-subject';

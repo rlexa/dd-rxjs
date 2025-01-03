@@ -25,7 +25,7 @@ export const rxIfThrow = <T, R>(check: boolean | ((val: T) => boolean), ex: R | 
   });
 
 /** @param subjects will be completed (DoneSubject will also fire next() before completing) */
-export const rxComplete = (...subjects: Subject<any>[]) =>
+export const rxComplete = (...subjects: Subject<never | void>[]) =>
   subjects
     .filter((ii) => !!ii)
     .forEach((ii) => {
@@ -68,12 +68,14 @@ export const rxFire_ =
     rxFire(...subjects);
 
 /** next(null) to all subjects */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const rxNull = (...subjects: Subject<any>[]) => rxNext_(...subjects)(null);
 /** rxNull curry */
 export const rxNull_ =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (...subjects: Subject<any>[]) =>
-  () =>
-    rxNull(...subjects);
+    () =>
+      rxNull(...subjects);
 
 /** next(true) to all subjects */
 export const rxTrue = (...subjects: Subject<boolean>[]) => rxNext_(...subjects)(true);

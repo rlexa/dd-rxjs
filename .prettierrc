@@ -1,6 +1,6 @@
 {
-  "bracketSpacing": false,
   "printWidth": 140,
-  "singleQuote": true,
-  "trailingComma": "all"
+  "bracketSpacing": false,
+  "plugins": ["prettier-plugin-organize-imports"],
+  "singleQuote": true
 }
