@@ -1,3 +1,21 @@
+## 1.5.4
+
+- _docs_: adjusted
+- _fix_: importing
+
+## 1.5.3
+
+- _new_
+  - **`jsonEqual`:** utils function
+  - **`notNullUndefined`:** utils function
+  - **`rxFanOut`:** rx-utils operator
+  - **stream stabilizer:** see `RxWrapBusyErrorBody`, `rxWrapStream`, `rxWrapQueriedStream`
+- _deprecated_
+  - **`DoneSubject`:** mainly used for Angular which now has native capabilities
+- _update_
+  - **`StateSubject`:** now has additional constructor with equality function
+  - **dependencies:** all dependencies updated (check peers)
+
 ## 1.5.2
 
 - _update_ **dependencies:** all dependencies updated (check peers)

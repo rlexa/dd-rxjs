@@ -1,9 +1,12 @@
 import {Subject} from 'rxjs';
 
+/** @deprecated for Angular context (use Angular native `takeUntilDestroyed(this.destroyRef)` instead) */
 export class DoneSubject extends Subject<void> {
   private markDone = false;
 
-  isDone = () => this.markDone;
+  isDone() {
+    return this.markDone;
+  }
 
   complete() {
     this.markDone = true;

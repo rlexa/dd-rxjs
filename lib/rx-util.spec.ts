@@ -1,5 +1,5 @@
 import {BehaviorSubject, forkJoin, interval, merge, of, Subject} from 'rxjs';
-import {take, takeLast, tap} from 'rxjs/operators';
+import {finalize, take, takeLast, tap} from 'rxjs/operators';
 import {DoneSubject} from './done-subject';
 import {
   rxApplyFirst,
@@ -7,6 +7,7 @@ import {
   rxComplete,
   rxFalse,
   rxFalse_,
+  rxFanOut,
   rxFire,
   rxFire_,
   rxIfDo,
@@ -42,6 +43,57 @@ describe('rxjs extension', () => {
       )(1),
     ).toBe(2);
     expect(rxApplyFirst_(null, (_) => _)(1)).toBe(1);
+  });
+
+  test('rxFanOut', () => {
+    const source$ = new Subject<number>();
+
+    const fnOff = jest.fn();
+    const fnFirst = jest.fn();
+    const fnOther = jest.fn();
+
+    const stream$ = source$.pipe(finalize(fnOff), rxFanOut());
+    const subFirst = stream$.subscribe(fnFirst);
+
+    expect(fnFirst).not.toHaveBeenCalled();
+    expect(fnOther).not.toHaveBeenCalled();
+    expect(fnOff).not.toHaveBeenCalled();
+
+    source$.next(1);
+
+    expect(fnFirst).toHaveBeenLastCalledWith(1);
+    expect(fnOther).not.toHaveBeenCalled();
+    expect(fnOff).not.toHaveBeenCalled();
+
+    const subOther = stream$.subscribe(fnOther);
+
+    expect(fnFirst).toHaveBeenLastCalledWith(1);
+    expect(fnOther).toHaveBeenLastCalledWith(1);
+    expect(fnOff).not.toHaveBeenCalled();
+
+    source$.next(2);
+
+    expect(fnFirst).toHaveBeenLastCalledWith(2);
+    expect(fnOther).toHaveBeenLastCalledWith(2);
+    expect(fnOff).not.toHaveBeenCalled();
+
+    subFirst.unsubscribe();
+
+    expect(fnFirst).toHaveBeenLastCalledWith(2);
+    expect(fnOther).toHaveBeenLastCalledWith(2);
+    expect(fnOff).not.toHaveBeenCalled();
+
+    source$.next(3);
+
+    expect(fnFirst).toHaveBeenLastCalledWith(2);
+    expect(fnOther).toHaveBeenLastCalledWith(3);
+    expect(fnOff).not.toHaveBeenCalled();
+
+    subOther.unsubscribe();
+
+    expect(fnFirst).toHaveBeenLastCalledWith(2);
+    expect(fnOther).toHaveBeenLastCalledWith(3);
+    expect(fnOff).toHaveBeenCalled();
   });
 
   test('rxIfDo', () => {

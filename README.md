@@ -8,38 +8,24 @@ Provides some handy extensions for rxjs library.
 
 ## Observables
 
-### `DoneSubject`
-
-Use for auto cleaning pipes (`DoneSubject.done()` triggers and completes).
-
-```typescript
-// e.g. in Angular Component:
-
-export class MyComponent extends OnDestroy, OnInit {
-  constructor(private readonly notifications: NotificationService) { }
-
-  private readonly done$ = new DoneSubject();
-
-  ngOnDestroy() {
-    this.done$.done(); // or rxComplete(this.done$);
-  }
-
-  ngOnInit() {
-    this.notifications.stream$
-      .pipe(takeUntil(this.done$))
-      .subscribe(console.log);
-  }
-}
-```
+### `DoneSubject` (deprecated, see `takeUntilDestroyed` in native Angular)
 
 ### `StateSubject`
 
-Normal `BehaviorSubject` but only sets the value in `next` if it's not the same (identity check) as current `.value`.
+Normal `BehaviorSubject` but only sets the value in `next` if it's not the same (identity check) as current `.value`...
 
 ```typescript
 const sbj$ = new StateSubject(123);
 sbj$.next(123); // ignored
 sbj$.next(234); // accepted
+```
+
+...or if it satisfies inequality with optional equality function:
+
+```typescript
+const sbj$ = new StateSubject({a: 1}, {equal: jsonEqual});
+sbj$.next({a: 1}); // ignored
+sbj$.next({a: 2}); // accepted
 ```
 
 ### `work$` (`work$_` for curry)
@@ -81,7 +67,46 @@ export class ReactiveDataComponent<T> {
 }
 ```
 
-## Util
+## Stable busy-or-error-or-body request streams.
+
+The usual UI case is: based on parameter changes backend data needs to be re-requested - while waiting on the response it should be clear that we are busy and if the request has an error it should not auto-complete the stream (which is what happens in rxjs). The stable stream should be share-able so that there is a component showing the data, a component showing up in case there was an error and another widget indicating that loading is being done by looking at the busy flag.
+
+The result is a stable shared stream where every value adheres to this interface:
+
+```typescript
+export interface WrapBusyErrorBody<T> {
+  busy: boolean;
+  error?: unknown;
+  body?: T;
+}
+```
+
+```typescript
+// example for a stream where no query is needed
+
+const triggerReload$ = new Subject<void>();
+
+const userConfigStream$ = rxWrapStream({
+  trigger$: triggerReload$,
+  apiCall: () => apiService.getUserConfiguration(),
+});
+```
+
+```typescript
+// example for a stream where query is needed
+
+const triggerReload$ = new Subject<void>();
+const fromDate$ = new StateSubject<string | null>(null);
+const toDate$ = new StateSubject<string | null>(null);
+
+rxWrapQueriedStream({
+  trigger$: triggerReload$,
+  query$: combineLatest([fromDate$, toDate$]),
+  apiCall: ([from, to]) => apiService.getItems({from, to}),
+});
+```
+
+## Reactive Util
 
 ### `rxApplyFirst` (`rxApplyFirst_` for curry)
 
@@ -112,6 +137,14 @@ request = (id: string) => of(id)
     switchMap(val => api.requestData$(id)),
     finalize(rxFalse_(busy$)),
   .subscribe(rxNext_(data$));
+```
+
+### `rxFanOut` operator
+
+Implemented as `shareReplay({refCount: true, bufferSize: 1})` i.e. first sub starts, others share, last unsub completes.
+
+```typescript
+const sharedStream$ = stream$.pipe(rxFanOut());
 ```
 
 ### `rxFire` (`rxFire_` for curry)
@@ -205,6 +238,16 @@ interval(100).pipe(take(13), rxThrounceTime(500)).subscribe(console.log);
 // 0 6 12
 // (in test cases without browser may evaluate to 0 5 10 12)
 ```
+
+## Util
+
+### `jsonEqual`
+
+Just checks JSON equality.
+
+### `notNullUndefined`
+
+Type guard checking type value not being `null` or `undefined`, useful when used in `stream$.pipe(filter(notNullUndefined))`.
 
 ## License
 
